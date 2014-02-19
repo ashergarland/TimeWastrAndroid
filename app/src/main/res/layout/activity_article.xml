@@ -21,6 +21,7 @@
             android:adjustViewBounds="true" />
 
         <TextView
+            android:id="@+id/textView2"
             android:layout_width="270dp"
             android:layout_height="50dp"
             android:layout_toRightOf="@+id/textView1"
@@ -31,15 +32,17 @@
             android:layout_marginTop="13dp"
             android:layout_marginLeft="10dp"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/favorite"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/textView2"
+            android:src="@android:drawable/btn_star"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:layout_alignParentRight="true"
-            android:background="#ffad56"
+            android:background="#00ffffff"
             android:onClick="favorite"/>
-
         <!-- your rest of layout elements -->
     </RelativeLayout>
 
