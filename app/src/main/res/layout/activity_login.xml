@@ -36,7 +36,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/mUserEmail"
             android:shadowColor="#ffad56"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,12 +55,12 @@
             android:fontFamily="Neou"
             android:text="PASSWORD"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_below="@+id/editText1"
-            android:layout_alignLeft="@+id/editText1"
-            android:layout_alignStart="@+id/editText1" />
+            android:layout_below="@+id/mUserEmail"
+            android:layout_alignLeft="@+id/mUserEmail"
+            android:layout_alignStart="@+id/mUserEmail" />
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/mUserPassword"
             android:shadowColor="#ffad56"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
             android:textSize="23dp"
             android:onClick="login"
             android:text="LOGIN"
-            android:layout_below="@+id/editText2"
+            android:layout_below="@+id/mUserPassword"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
