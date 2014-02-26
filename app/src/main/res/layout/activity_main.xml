@@ -18,7 +18,7 @@
         android:gravity="center"
         >
         <ToggleButton
-            android:id="@+id/togglebutton"
+            android:id="@+id/news"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -27,9 +27,9 @@
             android:textSize="11dp"
             android:textOn="NEWS"
             android:textOff="NEWS"
-            android:onClick="onToggleClicked"/>
+            />
         <ToggleButton
-            android:id="@+id/togglebutton"
+            android:id="@+id/sports"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -38,9 +38,9 @@
             android:textSize="11dp"
             android:textOn="SPORTS"
             android:textOff="SPORTS"
-            android:onClick="onToggleClicked"/>
+            />
         <ToggleButton
-            android:id="@+id/togglebutton"
+            android:id="@+id/finance"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -49,9 +49,9 @@
             android:textSize="11dp"
             android:textOn="FINANCE"
             android:textOff="FINANCE"
-            android:onClick="onToggleClicked"/>
+            />
         <ToggleButton
-            android:id="@+id/togglebutton"
+            android:id="@+id/politics"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -60,9 +60,9 @@
             android:textSize="11dp"
             android:textOn="POLITICS"
             android:textOff="POLITICS"
-            android:onClick="onToggleClicked"/>
+            />
         <ToggleButton
-            android:id="@+id/togglebutton"
+            android:id="@+id/tech"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -71,7 +71,7 @@
             android:textSize="11dp"
             android:textOn="TECH"
             android:textOff="TECH"
-            android:onClick="onToggleClicked"/>
+            />
     </LinearLayout>
 
     <TextView
@@ -96,12 +96,12 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="-80dp"
+            android:layout_marginRight="-75dp"
             android:src="@drawable/logo_clock_hd"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="20dp"
             android:text="WASTE . . ."
             android:textSize="45dp"
             ></TextView>
@@ -135,7 +135,7 @@
         android:layout_below="@+id/h3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="10dp"
         ></SeekBar>
 
     <Button
