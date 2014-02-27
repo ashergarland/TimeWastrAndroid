@@ -70,7 +70,7 @@ public class LoginActivity extends Activity {
     public void login(View button) {
         EditText userEmailField = (EditText) findViewById(R.id.mUserEmail);
         mUserEmail = userEmailField.getText().toString();
-        EditText userPasswordField = (EditText) findViewById(R.id.mUserPassword);
+        EditText userPasswordField = (EditText) findViewById(R.id.userPassword);
         mUserPassword = userPasswordField.getText().toString();
 
         if (mUserEmail.length() == 0 || mUserPassword.length() == 0) {

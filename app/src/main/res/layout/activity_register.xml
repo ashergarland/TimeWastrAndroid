@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".timewastr.app.LoginActivity" >
+    tools:context=".timewastr.app.RegisterActivity" >
 
     <ImageView
         android:id="@+id/textView1"
@@ -22,7 +22,7 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/loginbox"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="325dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:layout_below="@+id/textView1" >
@@ -32,21 +32,43 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="Neou"
-            android:text="USERNAME"
+            android:text="EMAIL"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
-            android:id="@+id/mUserEmail"
+            android:id="@+id/userEmail"
             android:shadowColor="#ffad56"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="User Name"
+            android:hint="User Email"
             android:layout_below="@+id/mUserEmailText"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true">
             <requestFocus />
         </EditText>
+
+        <TextView
+            android:id="@+id/userNameText"
+            android:layout_marginTop="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="Neou"
+            android:text="USERNAME"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/userEmail"
+            android:layout_alignLeft="@+id/userEmail"
+            android:layout_alignStart="@+id/userEmail" />
+
+        <EditText
+            android:id="@+id/userPasswordText"
+            android:shadowColor="#ffad56"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="User Name"
+            android:inputType="text"
+            android:layout_below="@+id/userNameText"/>
 
         <TextView
             android:id="@+id/userPasswordText"
@@ -56,9 +78,9 @@
             android:fontFamily="Neou"
             android:text="PASSWORD"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_below="@+id/mUserEmail"
-            android:layout_alignLeft="@+id/mUserEmail"
-            android:layout_alignStart="@+id/mUserEmail" />
+            android:layout_below="@+id/userPasswordText"
+            android:layout_alignLeft="@+id/userPasswordText"
+            android:layout_alignStart="@+id/userPasswordText" />
 
         <EditText
             android:id="@+id/userPassword"
@@ -67,31 +89,74 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="User Password"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:layout_below="@+id/userPasswordText"/>
+
+        <TextView
+            android:id="@+id/userPasswordConfirmationText"
+            android:layout_marginTop="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="Neou"
+            android:text="PASSWORD"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/userPassword"
+            android:layout_alignLeft="@+id/userPassword"
+            android:layout_alignStart="@+id/userPassword" />
+
+        <EditText
+            android:id="@+id/userPasswordConfirmation"
+            android:shadowColor="#ffad56"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="User Password Confirmation"
+            android:inputType="text"
+            android:layout_below="@+id/userPasswordConfirmationText"/>
 
         <Button
             android:id="@+id/button1"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="6dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:fontFamily="Calibri"
             android:background="#ffad56"
             android:textColor="#fff"
             android:textSize="23dp"
-            android:onClick="login"
-            android:text="LOGIN"
-            android:layout_below="@+id/userPassword"
+            android:onClick="register"
+            android:text="REGISTER"
+            android:layout_below="@+id/userPasswordConfirmation"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_marginTop="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="Neou"
+        android:text="___________________      __________________"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/relativeLayout2"/>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="Neou"
+        android:text="                                 OR"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/relativeLayout2"/>
+
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="7dp"
         android:orientation="horizontal"
-        android:layout_below="@+id/relativeLayout2"
+        android:layout_below="@+id/textView5"
         android:weightSum="1">
 
         <RelativeLayout
@@ -164,48 +229,5 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_marginTop="7dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="Neou"
-        android:text="___________________      __________________"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/linearLayout1"/>
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="Neou"
-        android:text="                                 OR"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/linearLayout1"/>
-
-    <Button
-        android:id="@+id/button4"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:fontFamily="Calibri"
-        android:background="#ffad56"
-        android:textColor="#fff"
-        android:textSize="23dp"
-        android:onClick="newUser"
-        android:text="NEW USER"
-        android:layout_below="@+id/textView4"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_marginTop="0dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="Neou"
-        android:text="                   FORGOT PASSWORD?"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/button4"/>
 </RelativeLayout>
