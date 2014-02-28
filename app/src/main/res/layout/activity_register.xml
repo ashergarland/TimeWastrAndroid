@@ -27,7 +27,7 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:layout_below="@+id/textView1" >
         <TextView
-            android:id="@+id/mUserEmailText"
+            android:id="@+id/userEmailText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -42,7 +42,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="User Email"
-            android:layout_below="@+id/mUserEmailText"
+            android:inputType="textEmailAddress"
+            android:layout_below="@+id/userEmailText"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true">
             <requestFocus />
@@ -61,7 +62,7 @@
             android:layout_alignStart="@+id/userEmail" />
 
         <EditText
-            android:id="@+id/userPasswordText"
+            android:id="@+id/userName"
             android:shadowColor="#ffad56"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -78,9 +79,9 @@
             android:fontFamily="Neou"
             android:text="PASSWORD"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_below="@+id/userPasswordText"
-            android:layout_alignLeft="@+id/userPasswordText"
-            android:layout_alignStart="@+id/userPasswordText" />
+            android:layout_below="@+id/userName"
+            android:layout_alignLeft="@+id/userName"
+            android:layout_alignStart="@+id/userName" />
 
         <EditText
             android:id="@+id/userPassword"
@@ -89,7 +90,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="User Password"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:layout_below="@+id/userPasswordText"/>
 
         <TextView
@@ -111,11 +112,11 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="User Password Confirmation"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:layout_below="@+id/userPasswordConfirmationText"/>
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/registerButton"
             android:layout_marginTop="6dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -123,7 +124,7 @@
             android:background="#ffad56"
             android:textColor="#fff"
             android:textSize="23dp"
-            android:onClick="register"
+            android:onClick="registerNewAccount"
             android:text="REGISTER"
             android:layout_below="@+id/userPasswordConfirmation"
             android:layout_alignParentRight="true"

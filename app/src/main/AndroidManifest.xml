@@ -20,6 +20,12 @@
         </activity>
 
         <activity
+            android:name=".RegisterActivity"
+            android:label="title_activity_register"
+            android:noHistory="true" >
+        </activity>
+
+        <activity
             android:name=".MainActivity"
             android:label="@string/main" >
         </activity>

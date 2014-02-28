@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.apache.http.client.HttpResponseException;
@@ -17,11 +19,14 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.http.impl.client.BasicResponseHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginActivity extends Activity {
 
@@ -38,6 +43,19 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
+
+        findViewById(R.id.registerButton).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // No account, load new account view
+                        Intent intent = new Intent(LoginActivity.this,
+                                RegisterActivity.class);
+                        startActivityForResult(intent, 0);
+                    }
+                });
+
+
         //username = (EditText)findViewById(R.id.userEmail);
         //password = (EditText)findViewById(R.id.userPassword);
 
@@ -90,6 +108,43 @@ public class LoginActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    private void loadTasksFromAPI(String url) {
+        GetTasksTask getTasksTask;
+        getTasksTask = new GetTasksTask(LoginActivity.this);
+        getTasksTask.setMessageLoading("Loading tasks...");
+        getTasksTask.execute(url + "?auth_token=" + mPreferences.getString("AuthToken", ""));
+    }
+
+    private class GetTasksTask extends UrlJsonAsyncTask {
+        public GetTasksTask(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            try {
+                JSONArray jsonTasks = json.getJSONObject("data").getJSONArray("tasks");
+                int length = jsonTasks.length();
+                List<String> tasksTitles = new ArrayList<String>(length);
+
+                for (int i = 0; i < length; i++) {
+                    tasksTitles.add(jsonTasks.getJSONObject(i).getString("title"));
+                }
+
+                /*ListView tasksListView = (ListView) findViewById (R.id.tasks_list_view);
+                if (tasksListView != null) {
+                    tasksListView.setAdapter(new ArrayAdapter<String>(LoginActivity.this,
+                            android.R.layout.simple_list_item_1, tasksTitles));
+                }*/
+            } catch (Exception e) {
+                Toast.makeText(context, e.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            } finally {
+                super.onPostExecute(json);
+            }
+        }
     }
 
     // file: LoginActivity.java

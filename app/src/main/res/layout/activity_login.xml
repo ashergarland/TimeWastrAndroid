@@ -27,7 +27,7 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:layout_below="@+id/textView1" >
         <TextView
-            android:id="@+id/mUserEmailText"
+            android:id="@+id/userEmailText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="User Name"
-            android:layout_below="@+id/mUserEmailText"
+            android:layout_below="@+id/userEmailText"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true">
             <requestFocus />
@@ -71,7 +71,7 @@
             android:layout_below="@+id/userPasswordText"/>
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/loginButton"
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -185,7 +185,7 @@
         android:layout_below="@+id/linearLayout1"/>
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/registerButton"
         android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -193,8 +193,8 @@
         android:background="#ffad56"
         android:textColor="#fff"
         android:textSize="23dp"
-        android:onClick="newUser"
         android:text="NEW USER"
+        android:onClick="register"
         android:layout_below="@+id/textView4"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -207,5 +207,5 @@
         android:fontFamily="Neou"
         android:text="                   FORGOT PASSWORD?"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/button4"/>
+        android:layout_below="@+id/registerButton"/>
 </RelativeLayout>

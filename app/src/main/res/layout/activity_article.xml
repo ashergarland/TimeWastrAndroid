@@ -21,7 +21,7 @@
             android:adjustViewBounds="true" />
 
         <TextView
-            android:id="@+id/mUserEmailText"
+            android:id="@+id/userEmailText"
             android:layout_width="270dp"
             android:layout_height="50dp"
             android:layout_toRightOf="@+id/textView1"
@@ -36,7 +36,7 @@
             android:id="@+id/favorite"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_toRightOf="@+id/mUserEmailText"
+            android:layout_toRightOf="@+id/userEmailText"
             android:src="@android:drawable/btn_star"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
