@@ -39,10 +39,11 @@ public class LoginActivity extends Activity {
     public static String mUserEmail;
     public static String mUserPassword;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
+        /*mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
 
         findViewById(R.id.registerButton).setOnClickListener(
                 new View.OnClickListener() {
@@ -53,9 +54,15 @@ public class LoginActivity extends Activity {
                                 RegisterActivity.class);
                         startActivityForResult(intent, 0);
                     }
-                });
+                });*/
+        login = (Button)findViewById(R.id.loginButton);
+        login.setOnClickListener(new View.OnClickListener(){
 
-
+            public void onClick(View v){
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(i);
+            }
+        });
         //username = (EditText)findViewById(R.id.userEmail);
         //password = (EditText)findViewById(R.id.userPassword);
 
@@ -84,7 +91,7 @@ public class LoginActivity extends Activity {
         }
 
     }*/
-
+/*COMMENT
     public void login(View button) {
         EditText userEmailField = (EditText) findViewById(R.id.mUserEmail);
         mUserEmail = userEmailField.getText().toString();
@@ -102,14 +109,14 @@ public class LoginActivity extends Activity {
             loginTask.execute(LOGIN_API_ENDPOINT_URL);
         }
     }
-
+*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
+/*
     private void loadTasksFromAPI(String url) {
         GetTasksTask getTasksTask;
         getTasksTask = new GetTasksTask(LoginActivity.this);
@@ -132,21 +139,21 @@ public class LoginActivity extends Activity {
                 for (int i = 0; i < length; i++) {
                     tasksTitles.add(jsonTasks.getJSONObject(i).getString("title"));
                 }
-
+COMMENT*/
                 /*ListView tasksListView = (ListView) findViewById (R.id.tasks_list_view);
                 if (tasksListView != null) {
                     tasksListView.setAdapter(new ArrayAdapter<String>(LoginActivity.this,
                             android.R.layout.simple_list_item_1, tasksTitles));
                 }*/
-            } catch (Exception e) {
+           /*COMMENT } catch (Exception e) {
                 Toast.makeText(context, e.getMessage(),
                         Toast.LENGTH_LONG).show();
             } finally {
                 super.onPostExecute(json);
             }
         }
-    }
-
+    }COMMENT*/
+/*COMMENT
     // file: LoginActivity.java
     class LoginTask extends UrlJsonAsyncTask {
         public LoginTask(Context context) {
@@ -230,7 +237,7 @@ public class LoginActivity extends Activity {
         }
     }
 
-
+COMMENT*/
 }
 
 

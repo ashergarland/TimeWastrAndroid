@@ -1,5 +1,6 @@
 package timewastr.app;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ public class MainActivity extends ActionBarActivity {
     TextView minutes;
     Vector<ToggleButton> settings = new Vector<ToggleButton>();
     int time;
+    private Button go;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,14 +94,21 @@ public class MainActivity extends ActionBarActivity {
                 clockText.setText(time + "");
             }
         });
+        go = (Button)findViewById(R.id.goButton);
+        go.setOnClickListener(new View.OnClickListener(){
 
-        goButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v){
+                Intent i = new Intent(MainActivity.this, ArticleActivity.class);
+                startActivity(i);
+            }
+        });
+/*        goButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Package settings
                 // int time
                 // Vector<ToggleButton> settings
             }
-        });
+        });*/
     }
 
 
