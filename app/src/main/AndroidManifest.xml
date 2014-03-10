@@ -30,6 +30,11 @@
             android:label="@string/main" >
         </activity>
 
+        <activity
+            android:name=".ArticleActivity"
+            android:label="title_activity_article" >
+        </activity>
+
     </application>
 
 </manifest>
