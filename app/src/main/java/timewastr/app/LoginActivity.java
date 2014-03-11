@@ -33,6 +33,7 @@ public class LoginActivity extends Activity {
     private EditText username=null;
     private EditText password=null;
     private Button login;
+    private Button register;
 
     private final static String LOGIN_API_ENDPOINT_URL = "http://0.0.0.0:3000/api/v1/sessions";
     public static SharedPreferences mPreferences;
@@ -63,6 +64,16 @@ public class LoginActivity extends Activity {
                 startActivity(i);
             }
         });
+
+        register = (Button)findViewById(R.id.registerButton);
+        register.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v){
+                Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(i);
+            }
+        });
+
         //username = (EditText)findViewById(R.id.userEmail);
         //password = (EditText)findViewById(R.id.userPassword);
 
@@ -110,12 +121,12 @@ public class LoginActivity extends Activity {
         }
     }
 */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
 /*
     private void loadTasksFromAPI(String url) {
         GetTasksTask getTasksTask;

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="timewastr.app" >
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <activity
-            android:name=".LoginActivity"
+            android:name="timewastr.app.LoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,23 +18,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".RegisterActivity"
+            android:name="timewastr.app.RegisterActivity"
             android:label="title_activity_register"
             android:noHistory="true" >
         </activity>
-
         <activity
-            android:name=".MainActivity"
+            android:name="timewastr.app.MainActivity"
             android:label="@string/main" >
         </activity>
-
         <activity
-            android:name=".ArticleActivity"
+            android:name="timewastr.app.ArticleActivity"
             android:label="title_activity_article" >
         </activity>
-
+        <activity
+            android:name="timewastr.app.FavoritesActivity"
+            android:label="@string/favorites" >
+        </activity>
     </application>
 
 </manifest>

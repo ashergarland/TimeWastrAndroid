@@ -7,41 +7,32 @@
 
     <RelativeLayout
         android:layout_height="50dp"
-        android:background="#fff000"
+        android:background="#C0C0C0"
         android:orientation="horizontal"
         android:layout_width="match_parent">
 
-
-        <ImageView
-            android:id="@+id/textView1"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentTop="true"
-            android:src="@drawable/timewastr"
-            android:adjustViewBounds="true" />
-
         <TextView
-            android:id="@+id/userEmailText"
-            android:layout_width="270dp"
+            android:id="@+id/articleTitle"
+            android:layout_width="300dp"
             android:layout_height="50dp"
-            android:layout_toRightOf="@+id/textView1"
             android:layout_alignParentTop="true"
             android:text="Title of article"
             android:fontFamily="Neou"
             android:textSize="18dp"
             android:layout_marginTop="13dp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="20dp"/>
 
         <ImageButton
             android:id="@+id/favorite"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_toRightOf="@+id/userEmailText"
+            android:layout_toRightOf="@+id/articleTitle"
             android:src="@android:drawable/btn_star"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_alignParentRight="true"
             android:background="#00ffffff"
+            android:tag="starOff"
             android:onClick="favorite"/>
         <!-- your rest of layout elements -->
     </RelativeLayout>

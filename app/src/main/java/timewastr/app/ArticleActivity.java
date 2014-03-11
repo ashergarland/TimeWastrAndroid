@@ -2,10 +2,15 @@ package timewastr.app;
 
 import android.OnSwipeTouchListener;
 import android.app.*;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +31,56 @@ public class ArticleActivity extends Activity {
         tv1 = (TextView)findViewById(R.id.tv1);
 
         loadDoc();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                //openSettings();
+                return true;
+            case R.id.action_favorites:
+                this.openFavorites();
+                return true;
+            case R.id.action_signOut:
+                this.signOut();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void openFavorites() {
+        Intent i = new Intent(ArticleActivity.this, FavoritesActivity.class);
+        startActivity(i);
+    }
+
+    public void signOut() {
+        Intent i = new Intent(ArticleActivity.this, LoginActivity.class);
+        startActivity(i);
+    }
+
+    public void favorite(View view) {
+        //Here we will handle favoriting the current article
+        ImageButton star = (ImageButton)findViewById(R.id.favorite);
+        //we are removing from favorites
+        if (star.getTag() == "starOn") {
+            star.setTag("starOff");
+            star.setImageResource(getResources().getIdentifier("android:drawable/btn_star", null, getPackageName()));
+        //we are adding to favorites
+        } else {
+            star.setTag("starOn");
+            star.setImageResource(getResources().getIdentifier("android:drawable/btn_star_big_on", null, getPackageName()));
+        }
     }
 
     private void loadDoc(){
