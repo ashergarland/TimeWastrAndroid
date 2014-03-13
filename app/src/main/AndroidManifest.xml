@@ -39,6 +39,7 @@
             android:name="timewastr.app.LoadingActivity"
             android:label="@string/title_activity_loading" >
         </activity>
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="b022c1dd43339c53dd70c9955042114fcb0af8a9"/>
     </application>
 
 </manifest>
