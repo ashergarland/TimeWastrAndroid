@@ -40,7 +40,14 @@ public class MainActivity extends ActionBarActivity {
     Button   goButton;
     TextView minutes;
     Vector<ToggleButton> settings = new Vector<ToggleButton>();
+
     int time;
+    boolean news;
+    boolean health;
+    boolean finance;
+    boolean politics;
+    boolean tech;
+
     private Button go;
 
     @Override
@@ -52,7 +59,7 @@ public class MainActivity extends ActionBarActivity {
         clockText   = (TextView)findViewById(R.id.clockText);
         minutes     = (TextView)findViewById(R.id.h3);
         settings.add((ToggleButton)findViewById(R.id.news));
-        settings.add((ToggleButton)findViewById(R.id.sports));
+        settings.add((ToggleButton)findViewById(R.id.health));
         settings.add((ToggleButton)findViewById(R.id.finance));
         settings.add((ToggleButton)findViewById(R.id.politics));
         settings.add((ToggleButton)findViewById(R.id.tech));
@@ -98,7 +105,21 @@ public class MainActivity extends ActionBarActivity {
         go.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){
-                Intent i = new Intent(MainActivity.this, ArticleActivity.class);
+                news = ((ToggleButton)findViewById(R.id.news)).isChecked();
+                health = ((ToggleButton)findViewById(R.id.health)).isChecked();
+                finance = ((ToggleButton)findViewById(R.id.finance)).isChecked();
+                politics = ((ToggleButton)findViewById(R.id.politics)).isChecked();
+                tech = ((ToggleButton)findViewById(R.id.tech)).isChecked();
+
+                Intent i = new Intent(MainActivity.this, LoadingActivity.class);
+
+                i.putExtra("time", time);
+                i.putExtra("news", news);
+                i.putExtra("health", health);
+                i.putExtra("finance", finance);
+                i.putExtra("politics", politics);
+                i.putExtra("tech", tech);
+
                 startActivity(i);
             }
         });
@@ -164,7 +185,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public JSONObject postData(String url, List<NameValuePair> nameValuePairs) {
+    /*public JSONObject postData(String url, List<NameValuePair> nameValuePairs) {
         // Create a new HttpClient and Post Header
         JSONObject response = null;
         HttpClient httpclient = new DefaultHttpClient();
@@ -207,5 +228,5 @@ public class MainActivity extends ActionBarActivity {
         }
         // load article page displaying on of the articles
         //goto
-    }
+    }*/
 }

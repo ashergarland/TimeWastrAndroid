@@ -1,5 +1,7 @@
 package timewastr.app;
 
+import android.Article;
+import android.DataWrapper;
 import android.OnSwipeTouchListener;
 import android.app.*;
 import android.content.Intent;
@@ -38,32 +40,43 @@ import java.util.ArrayList;
  * Created by Zawu on 2/10/14.
  */
 public class ArticleActivity extends Activity {
-    private final String USER_AGENT = "Mozilla/5.0";
-    String output = "Please Wait";
-    private ProgressDialog pd;
+
     TextView tv1;
     TextView articleTitle;
     ScrollView sv1;
     OnSwipeTouchListener onSwipeTouchListener;
-    ArrayList<String> articleTitles = new ArrayList<String>();
-    ArrayList<String> articles = new ArrayList<String>();
-    int totalArticleCount = 1;
-    int currentArticle = 1;
+    ArrayList<Article> articles = new ArrayList<Article>();
+//    int totalArticleCount = 1;
+    int currentArticle = 0;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
 
+//        DataWrapper dw = (DataWrapper) getIntent().getSerializableExtra("data");
+//        articles = dw.getArticles();
+//
+//        System.out.println("PRINTING ARTICLE IN ARTICLE ");
+//        for(Article a: articles)
+//        {
+//            System.out.print(a.title + " " + a.time);
+//        }
+        Bundle b = this.getIntent().getExtras();
+        articles = b.getParcelableArrayList("articles");
+//        System.out.println("IN ACTIVITY " + b.getString("test"));
+        System.out.println("PRINTING ARTICLE IN ARTICLE ");
+        for(Article a: articles)
+        {
+            System.out.print(a.title + " " + a.time);
+        }
+
         tv1 = (TextView)findViewById(R.id.tv1);
         sv1 = (ScrollView)findViewById(R.id.sv1);
         articleTitle = (TextView)findViewById(R.id.articleTitle);
         onSwipeTouchListener = new OnSwipeTouchListener(sv1.getContext()) {
-            /*public void onSwipeTop() {
-                Toast.makeText(ArticleActivity.this, "top", Toast.LENGTH_SHORT).show();
-            }*/
             public void onSwipeLeft() {
-                if(totalArticleCount == currentArticle)//If at the newest article
+                /*if(totalArticleCount == currentArticle)//If at the newest article
                 {
                     Toast.makeText(ArticleActivity.this, "New Article", Toast.LENGTH_SHORT).show();
                     currentArticle++;
@@ -71,28 +84,26 @@ public class ArticleActivity extends Activity {
                     getNewArticle();
                 }
                 else if(currentArticle < totalArticleCount )//If at an previous article
-                {
+                {*/
                     Toast.makeText(ArticleActivity.this, "Next Article", Toast.LENGTH_SHORT).show();
                     currentArticle++;
-                    getReadArticle();
-                }
+                    getNewArticle();
+//                }
             }
             public void onSwipeRight() {
-                if(currentArticle == 1)//If swipe to first article
+                if(currentArticle == 0)//If swipe to first article
                 {
                     Toast.makeText(ArticleActivity.this, "First Article", Toast.LENGTH_SHORT).show();
-                    getReadArticle();
+                    getNewArticle();
                 }
                 else//If swipe back to any article before
                 {
                     Toast.makeText(ArticleActivity.this, "Previous Article", Toast.LENGTH_SHORT).show();
                     currentArticle--;
-                    getReadArticle();
+                    getNewArticle();
                 }
             }
-            /*public void onSwipeBottom() {
-                Toast.makeText(ArticleActivity.this, "bottom", Toast.LENGTH_SHORT).show();
-            }*/
+
         };
 
         sv1.setOnTouchListener(onSwipeTouchListener);
@@ -156,100 +167,27 @@ public class ArticleActivity extends Activity {
 
     private void getNewArticle()
     {
-        String titleCall = "titleAPICALL " + totalArticleCount;
+        String titleCall = articles.get(currentArticle).title;
         //articleTitle.setText(Html.fromHtml(articleCall));
-        articleTitles.add(titleCall);
+
         articleTitle.setText(titleCall);
-
-        String articleCall = "";
-//        pd.show(ArticleActivity.this, "Article", "Loading");
-        for(int x=0;x<=100;x++){
-            articleCall += "articleAPICALL " + totalArticleCount + " " +String.valueOf(x)+"\n";
+        String author = articles.get(currentArticle).author;
+        if(author.length() == 0)
+        {
+            author = "Unknown";
         }
-        new GetArticle().execute(tv1);//Use asynctask to load the article
-//        pd.dismiss();
-        articles.add(output);
-    }
-
-    private void getReadArticle()
-    {
-        articleTitle.setText(articleTitles.get(currentArticle-1));
-        tv1.setText(articles.get(currentArticle-1));
+        String publishedOn = articles.get(currentArticle).published;
+        String pictures = articles.get(currentArticle).picture;
+        String link = "View original article at " + articles.get(currentArticle).link;
+        String articleContent = articles.get(currentArticle).content;
+        String authorPublish = "by " + author + " on " + publishedOn;
+        tv1.setText(authorPublish + "\n" + Html.fromHtml(articleContent) + "\n\n" + link);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev){
         onSwipeTouchListener.getGestureDetector().onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
-    }
-
-    public class GetArticle extends AsyncTask<TextView, Void, String> {
-        TextView t;
-        String result = "fail";
-
-        @Override
-        protected String doInBackground(TextView... params) {
-            // TODO Auto-generated method stub
-            this.t = params[0];
-            return GetSomething();
-        }
-
-        final String GetSomething()
-        {
-            String url = "http://timewastr.herokuapp.com/test";
-            BufferedReader inStream = null;
-            try {
-                HttpClient httpClient = new DefaultHttpClient();
-                HttpGet httpRequest = new HttpGet(url);
-                HttpResponse response = httpClient.execute(httpRequest);
-                inStream = new BufferedReader(
-                        new InputStreamReader(
-                                response.getEntity().getContent()));
-
-                StringBuffer buffer = new StringBuffer("");
-                String line = "";
-                String NL = System.getProperty("line.separator");
-                while ((line = inStream.readLine()) != null) {
-                    buffer.append(line + NL);
-                }
-                inStream.close();
-
-                result = buffer.toString();
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } finally {
-                if (inStream != null) {
-                    try {
-                        inStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return result;
-        }
-
-        //TODO: Read the JSON object here and parse it
-        protected void onPostExecute(String page)
-        {
-            //Logic for JSON parsing - I intend to have x amount of arraylists for each attribute (title, content, published, etc.)
-            /*
-            JSONObject obj = null;
-            try {
-                obj = new JSONObject(page);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            for (int i = 0; i < obj.length(); ++i) {
-                final JSONObject article = obj.
-            }
-            */
-            //this is here to show the json object being passed through - the screen should change in 10-15 seconds
-            t.setText(Html.fromHtml(page));
-
-        }
     }
 
 }

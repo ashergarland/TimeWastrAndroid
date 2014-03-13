@@ -7,5 +7,7 @@
     <string name="main">Main</string>
     <string name="favorites">Favorite Articles</string>
     <string name="sign_out">Sign Out</string>
+    <string name="title_activity_loading">LoadingActivity</string>
+    <string name="title_activity_article">ArticleActivity</string>
 
 </resources>
