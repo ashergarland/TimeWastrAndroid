@@ -3,7 +3,9 @@ package timewastr.app;
 import android.OnSwipeTouchListener;
 import android.app.*;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -13,13 +15,32 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
  * Created by Zawu on 2/10/14.
  */
 public class ArticleActivity extends Activity {
-
+    private final String USER_AGENT = "Mozilla/5.0";
+    String output = "Please Wait";
+    private ProgressDialog pd;
     TextView tv1;
     TextView articleTitle;
     ScrollView sv1;
@@ -141,14 +162,13 @@ public class ArticleActivity extends Activity {
         articleTitle.setText(titleCall);
 
         String articleCall = "";
-
+//        pd.show(ArticleActivity.this, "Article", "Loading");
         for(int x=0;x<=100;x++){
             articleCall += "articleAPICALL " + totalArticleCount + " " +String.valueOf(x)+"\n";
         }
-
-        //tv1.setText(Html.fromHtml(articleCall));
-        articles.add(articleCall);
-        tv1.setText(articleCall);
+        new GetArticle().execute(tv1);//Use asynctask to load the article
+//        pd.dismiss();
+        articles.add(output);
     }
 
     private void getReadArticle()
@@ -162,4 +182,74 @@ public class ArticleActivity extends Activity {
         onSwipeTouchListener.getGestureDetector().onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
+
+    public class GetArticle extends AsyncTask<TextView, Void, String> {
+        TextView t;
+        String result = "fail";
+
+        @Override
+        protected String doInBackground(TextView... params) {
+            // TODO Auto-generated method stub
+            this.t = params[0];
+            return GetSomething();
+        }
+
+        final String GetSomething()
+        {
+            String url = "http://timewastr.herokuapp.com/test";
+            BufferedReader inStream = null;
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpGet httpRequest = new HttpGet(url);
+                HttpResponse response = httpClient.execute(httpRequest);
+                inStream = new BufferedReader(
+                        new InputStreamReader(
+                                response.getEntity().getContent()));
+
+                StringBuffer buffer = new StringBuffer("");
+                String line = "";
+                String NL = System.getProperty("line.separator");
+                while ((line = inStream.readLine()) != null) {
+                    buffer.append(line + NL);
+                }
+                inStream.close();
+
+                result = buffer.toString();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } finally {
+                if (inStream != null) {
+                    try {
+                        inStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return result;
+        }
+
+        //TODO: Read the JSON object here and parse it
+        protected void onPostExecute(String page)
+        {
+            //Logic for JSON parsing - I intend to have x amount of arraylists for each attribute (title, content, published, etc.)
+            /*
+            JSONObject obj = null;
+            try {
+                obj = new JSONObject(page);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            for (int i = 0; i < obj.length(); ++i) {
+                final JSONObject article = obj.
+            }
+            */
+            //this is here to show the json object being passed through - the screen should change in 10-15 seconds
+            t.setText(Html.fromHtml(page));
+
+        }
+    }
+
 }
