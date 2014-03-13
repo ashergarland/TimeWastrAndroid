@@ -64,9 +64,6 @@ public class FavoritesActivity extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                //openSettings();
-                return true;
             case R.id.action_favorites:
                 this.openFavorites();
                 return true;
