@@ -1,6 +1,8 @@
 package timewastr.app;
 
+import android.SignOut;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import android.os.Build;
 import android.widget.SeekBar;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
@@ -35,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends ActionBarActivity {
+    MyApp app;
     SeekBar  timeBar;
     TextView clockText;
     Button   goButton;
@@ -47,6 +51,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        app = ((MyApp)getApplicationContext());
 
         timeBar     = (SeekBar)findViewById(R.id.timeBar);
         clockText   = (TextView)findViewById(R.id.clockText);
@@ -124,6 +130,9 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
+            case R.id.action_home:
+                this.openHome();
+                return true;
             case R.id.action_favorites:
                 this.openFavorites();
                 return true;
@@ -135,12 +144,20 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    public void openHome() {
+        Intent i = new Intent(MainActivity.this, MainActivity.class);
+        startActivity(i);
+    }
+
     public void openFavorites() {
         Intent i = new Intent(MainActivity.this, FavoritesActivity.class);
         startActivity(i);
     }
 
     public void signOut() {
+        SignOut signout = new SignOut(app.getToken());
+        signout.execute();
+        app.setToken("");
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(i);
     }

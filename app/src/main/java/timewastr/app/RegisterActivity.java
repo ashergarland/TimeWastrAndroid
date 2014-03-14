@@ -7,6 +7,7 @@ package timewastr.app;
 import android.UrlJsonAsyncTask;
 import android.app.Activity;
 import android.content.*;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,17 +29,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.http.impl.client.BasicResponseHandler;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 public class RegisterActivity extends Activity{
-
-    private final static String REGISTER_API_ENDPOINT_URL = "timewastr.herokuapp.com/register/";
     private SharedPreferences mPreferences;
     private String mUserEmail;
     private String mUserPassword;
     private String mUserPasswordConfirmation;
+    private String response;
+    private Context self = this;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,29 +66,72 @@ public class RegisterActivity extends Activity{
             Toast.makeText(this, "Please complete all the fields",Toast.LENGTH_LONG).show();
             return;
         } else {
-            if (!mUserPassword.equals(mUserPasswordConfirmation)) {
+            if (!isValidEmailAddress(mUserEmail)) {
+                Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_LONG).show();
+            } else if (!mUserPassword.equals(mUserPasswordConfirmation)) {
                 // password doesn't match confirmation
                 Toast.makeText(this, "Your password doesn't match confirmation, check again", Toast.LENGTH_LONG).show();
                 return;
             } else {
-                // everything is ok, register
-                String url = "timewastr.herokuapp.com/register/" + mUserEmail + "/" + mUserPassword;
-                HttpResponse response = null;
+                Toast.makeText(self, "Registering...",Toast.LENGTH_LONG).show();
+                new MyAsyncTask().execute();
+            }
+        }
+    }
+
+    public boolean isValidEmailAddress(String email) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(".+@.+\\.[a-z]+");
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
+    public void register() throws Exception {
+        //Do a get request and grab data
+        URL url = new URL("http://timewastr.herokuapp.com/register/" + mUserEmail + "/" + mUserPassword);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"), 8);
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null)
+        {
+            sb.append(line + "\n");
+        }
+        response = sb.toString();
+        reader.close();
+    }
+
+    public void registerComplete() throws JSONException {
+        JSONObject data = new JSONObject(response);
+        MyApp app = ((MyApp)getApplicationContext());
+        app.setToken(data.getString("token"));
+        Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+        startActivity(i);
+    }
+
+    public class MyAsyncTask extends AsyncTask<String, Integer, Integer>{
+        @Override
+        // THIS IS THE TASK TO DO
+        protected Integer doInBackground(String... params) {
+            try {
+                register();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+            return 1;
+        }
+        // THIS IS WHEN TASK IS COMPLETED
+        protected void onPostExecute(Integer result){
+            if (result == null) {
+                Toast.makeText(self, "An account with that email already exists",Toast.LENGTH_LONG).show();
+            } else {
                 try {
-                    HttpClient client = new DefaultHttpClient();
-                    HttpGet request = new HttpGet();
-                    request.setURI(new URI(url));
-                    response = client.execute(request);
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                } catch (ClientProtocolException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
+                    registerComplete();
+                } catch (JSONException e) {
+                    Toast.makeText(self, "There was a problem, please try again",Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
-
             }
         }
     }

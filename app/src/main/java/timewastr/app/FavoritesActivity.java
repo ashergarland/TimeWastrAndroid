@@ -1,6 +1,7 @@
 package timewastr.app;
 
 import android.OnSwipeTouchListener;
+import android.SignOut;
 import android.app.*;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import java.util.Arrays;
  * Created by Skylar on 3/10/14.
  */
 public class FavoritesActivity extends ListActivity {
+    MyApp app;
     String[] articleTitles;
     String[] articleLinks;
 
@@ -33,7 +35,8 @@ public class FavoritesActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_article);
+
+        app = ((MyApp)getApplicationContext());
 
         this.getFavorites();
         setListAdapter(new ArrayAdapter<String>(this, R.layout.activity_favorites, articleTitles));
@@ -64,6 +67,9 @@ public class FavoritesActivity extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
+            case R.id.action_home:
+                this.openHome();
+                return true;
             case R.id.action_favorites:
                 this.openFavorites();
                 return true;
@@ -75,12 +81,20 @@ public class FavoritesActivity extends ListActivity {
         }
     }
 
+    public void openHome() {
+        Intent i = new Intent(FavoritesActivity.this, MainActivity.class);
+        startActivity(i);
+    }
+
     public void openFavorites() {
         Intent i = new Intent(FavoritesActivity.this, FavoritesActivity.class);
         startActivity(i);
     }
 
     public void signOut() {
+        SignOut signout = new SignOut(app.getToken());
+        signout.execute();
+        app.setToken("");
         Intent i = new Intent(FavoritesActivity.this, LoginActivity.class);
         startActivity(i);
     }

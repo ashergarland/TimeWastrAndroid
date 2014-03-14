@@ -1,6 +1,7 @@
 package timewastr.app;
 
 import android.OnSwipeTouchListener;
+import android.SignOut;
 import android.app.*;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -49,11 +50,14 @@ public class ArticleActivity extends Activity {
     ArrayList<String> articles = new ArrayList<String>();
     int totalArticleCount = 1;
     int currentArticle = 1;
+    MyApp app;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
+
+        app = ((MyApp)getApplicationContext());
 
         tv1 = (TextView)findViewById(R.id.tv1);
         sv1 = (ScrollView)findViewById(R.id.sv1);
@@ -112,6 +116,9 @@ public class ArticleActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
+            case R.id.action_home:
+                this.openHome();
+                return true;
             case R.id.action_favorites:
                 this.openFavorites();
                 return true;
@@ -123,12 +130,20 @@ public class ArticleActivity extends Activity {
         }
     }
 
+    public void openHome() {
+        Intent i = new Intent(ArticleActivity.this, MainActivity.class);
+        startActivity(i);
+    }
+
     public void openFavorites() {
         Intent i = new Intent(ArticleActivity.this, FavoritesActivity.class);
         startActivity(i);
     }
 
     public void signOut() {
+        SignOut signout = new SignOut(app.getToken());
+        signout.execute();
+        app.setToken("");
         Intent i = new Intent(ArticleActivity.this, LoginActivity.class);
         startActivity(i);
     }

@@ -79,7 +79,7 @@
             android:background="#ffad56"
             android:textColor="#fff"
             android:textSize="23dp"
-            android:onClick="login"
+            android:onClick="loginTriggered"
             android:text="LOGIN"
             android:layout_below="@+id/userPassword"
             android:layout_alignParentRight="true"
