@@ -29,15 +29,15 @@
             android:textOff="NEWS"
             />
         <ToggleButton
-            android:id="@+id/sports"
+            android:id="@+id/health"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="-5dp"
             android:layout_marginRight="-5dp"
             android:textSize="11dp"
-            android:textOn="SPORTS"
-            android:textOff="SPORTS"
+            android:textOn="HEALTH"
+            android:textOff="HEALTH"
             />
         <ToggleButton
             android:id="@+id/finance"

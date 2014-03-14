@@ -30,11 +30,15 @@
         </activity>
         <activity
             android:name="timewastr.app.ArticleActivity"
-            android:label="title_activity_article" >
+            android:label="@string/title_activity_article" >
         </activity>
         <activity
             android:name="timewastr.app.FavoritesActivity"
             android:label="@string/favorites" >
+        </activity>
+        <activity
+            android:name="timewastr.app.LoadingActivity"
+            android:label="@string/title_activity_loading" >
         </activity>
     </application>
 

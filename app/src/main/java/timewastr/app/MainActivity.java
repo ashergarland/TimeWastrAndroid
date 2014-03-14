@@ -44,7 +44,14 @@ public class MainActivity extends ActionBarActivity {
     Button   goButton;
     TextView minutes;
     Vector<ToggleButton> settings = new Vector<ToggleButton>();
+
     int time;
+    boolean news;
+    boolean health;
+    boolean finance;
+    boolean politics;
+    boolean tech;
+
     private Button go;
 
     @Override
@@ -58,7 +65,7 @@ public class MainActivity extends ActionBarActivity {
         clockText   = (TextView)findViewById(R.id.clockText);
         minutes     = (TextView)findViewById(R.id.h3);
         settings.add((ToggleButton)findViewById(R.id.news));
-        settings.add((ToggleButton)findViewById(R.id.sports));
+        settings.add((ToggleButton)findViewById(R.id.health));
         settings.add((ToggleButton)findViewById(R.id.finance));
         settings.add((ToggleButton)findViewById(R.id.politics));
         settings.add((ToggleButton)findViewById(R.id.tech));
@@ -104,7 +111,21 @@ public class MainActivity extends ActionBarActivity {
         go.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){
-                Intent i = new Intent(MainActivity.this, ArticleActivity.class);
+                news = ((ToggleButton)findViewById(R.id.news)).isChecked();
+                health = ((ToggleButton)findViewById(R.id.health)).isChecked();
+                finance = ((ToggleButton)findViewById(R.id.finance)).isChecked();
+                politics = ((ToggleButton)findViewById(R.id.politics)).isChecked();
+                tech = ((ToggleButton)findViewById(R.id.tech)).isChecked();
+
+                Intent i = new Intent(MainActivity.this, LoadingActivity.class);
+
+                i.putExtra("time", time);
+                i.putExtra("news", news);
+                i.putExtra("health", health);
+                i.putExtra("finance", finance);
+                i.putExtra("politics", politics);
+                i.putExtra("tech", tech);
+
                 startActivity(i);
             }
         });
@@ -176,50 +197,5 @@ public class MainActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.activity_main, container, false);
             return rootView;
         }
-    }
-
-    public JSONObject postData(String url, List<NameValuePair> nameValuePairs) {
-        // Create a new HttpClient and Post Header
-        JSONObject response = null;
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(url);
-        try {
-            // Add your data
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-            // Execute HTTP Post Request
-            ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            String responseBody = httpclient.execute(httppost, responseHandler);
-            response = new JSONObject(responseBody);
-
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return response;
-    }
-
-    public void timeWastr(Integer time, List<Boolean> settings) {
-        String url = "http://www.timewastr.com/controller";
-        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-        JSONObject response;
-
-        nameValuePairs.add(new BasicNameValuePair("time", time.toString()));
-        nameValuePairs.add(new BasicNameValuePair("news", settings.get(0).toString()));
-        nameValuePairs.add(new BasicNameValuePair("sports", settings.get(1).toString()));
-        nameValuePairs.add(new BasicNameValuePair("finance", settings.get(2).toString()));
-        nameValuePairs.add(new BasicNameValuePair("politics", settings.get(3).toString()));
-        nameValuePairs.add(new BasicNameValuePair("tech", settings.get(4).toString()));
-
-        // reponse should be a json object of a list of articles to display
-        response = postData(url, nameValuePairs);
-        if (response == null) {
-            //something fucked up
-        }
-        // load article page displaying on of the articles
-        //goto
     }
 }
