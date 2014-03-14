@@ -3,6 +3,7 @@ package timewastr.app;
 import android.Article;
 import android.DataWrapper;
 import android.OnSwipeTouchListener;
+import android.ToastSingleton;
 import android.SignOut;
 import android.app.*;
 import android.content.Context;
@@ -18,6 +19,8 @@ import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.analytics.tracking.android.EasyTracker;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -55,6 +58,19 @@ public class ArticleActivity extends Activity {
     OnSwipeTouchListener onSwipeTouchListener;
     ArrayList<Article> articles = new ArrayList<Article>();
     int currentArticle = 0;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
     boolean adding = false;
     Context self = this;
     String response;

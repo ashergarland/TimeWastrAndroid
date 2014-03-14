@@ -25,6 +25,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.util.*;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,6 +50,18 @@ public class FavoritesActivity extends ListActivity {
     boolean loading = true;
     Context self = this;
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {

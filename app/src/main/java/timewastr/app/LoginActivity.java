@@ -1,6 +1,7 @@
 package timewastr.app; /**
  * Created by Zawu on 2/10/14.
  */
+import android.ToastSingleton;
 import android.UrlJsonAsyncTask;
 import android.app.Activity;
 import android.content.*;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
@@ -34,6 +36,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.*;
 import java.util.Map;
 
 public class LoginActivity extends Activity {
@@ -42,6 +46,19 @@ public class LoginActivity extends Activity {
     public static SharedPreferences mPreferences;
     public static String mUserEmail;
     public static String mUserPassword;
+    private EasyTracker easyTracker = null;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
     String response;
     MyApp app;
 
@@ -50,6 +67,8 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
+
         setContentView(R.layout.activity_login);
         app = ((MyApp)getApplicationContext());
 

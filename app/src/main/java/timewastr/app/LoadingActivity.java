@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -49,6 +51,18 @@ public class LoadingActivity extends ActionBarActivity {
     String response;
     //HttpResponse response;
     ArrayList<Article> articles = new ArrayList<Article>();
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

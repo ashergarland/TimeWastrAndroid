@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,18 @@ public class MainActivity extends ActionBarActivity {
     boolean tech;
 
     private Button go;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
