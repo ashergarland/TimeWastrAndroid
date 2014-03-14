@@ -6,7 +6,7 @@
     tools:context=".timewastr.app.ArticleActivity">
 
     <RelativeLayout
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:background="#C0C0C0"
         android:orientation="horizontal"
         android:layout_width="match_parent">
@@ -18,7 +18,7 @@
             android:layout_alignParentTop="true"
             android:text="Title of article"
             android:fontFamily="Neou"
-            android:textSize="18dp"
+            android:textSize="12dp"
             android:layout_marginTop="13dp"
             android:layout_marginLeft="20dp"/>
         <ImageButton
@@ -40,7 +40,7 @@
         android:layout_height="match_parent"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="16dp"
+        android:paddingTop="10dp"
         android:orientation="horizontal"
         android:layout_width="match_parent">
         <ScrollView
@@ -53,6 +53,8 @@
             android:id="@+id/tv1"
             android:text="hello"
             android:fontFamily="Neou"
+            android:linksClickable="true"
+            android:autoLink="web"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
         </ScrollView>

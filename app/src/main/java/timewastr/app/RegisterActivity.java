@@ -7,6 +7,7 @@ package timewastr.app;
 import android.UrlJsonAsyncTask;
 import android.app.Activity;
 import android.content.*;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,10 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
 import com.google.analytics.tracking.android.EasyTracker;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -26,16 +32,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.http.impl.client.BasicResponseHandler;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public class RegisterActivity extends Activity{
-
-    private final static String REGISTER_API_ENDPOINT_URL = "http://10.0.2.2:3000/api/v1/registrations";
     private SharedPreferences mPreferences;
     private String mUserEmail;
-    private String mUserName;
     private String mUserPassword;
     private String mUserPasswordConfirmation;
+    private String response;
+    private Context self = this;
 
     @Override
     public void onStart() {
@@ -60,106 +71,82 @@ public class RegisterActivity extends Activity{
     public void registerNewAccount(View button) {
         EditText userEmailField = (EditText) findViewById(R.id.userEmail);
         mUserEmail = userEmailField.getText().toString();
-        EditText userNameField = (EditText) findViewById(R.id.userName);
-        mUserName = userNameField.getText().toString();
         EditText userPasswordField = (EditText) findViewById(R.id.userPassword);
         mUserPassword = userPasswordField.getText().toString();
         EditText userPasswordConfirmationField = (EditText) findViewById(R.id.userPasswordConfirmation);
         mUserPasswordConfirmation = userPasswordConfirmationField.getText().toString();
 
-        if (mUserEmail.length() == 0 || mUserName.length() == 0 || mUserPassword.length() == 0 || mUserPasswordConfirmation.length() == 0) {
+        if (mUserEmail.length() == 0 || mUserPassword.length() == 0 || mUserPasswordConfirmation.length() == 0) {
             // input fields are empty
             Toast.makeText(this, "Please complete all the fields",Toast.LENGTH_LONG).show();
             return;
         } else {
-            if (!mUserPassword.equals(mUserPasswordConfirmation)) {
+            if (!isValidEmailAddress(mUserEmail)) {
+                Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_LONG).show();
+            } else if (!mUserPassword.equals(mUserPasswordConfirmation)) {
                 // password doesn't match confirmation
                 Toast.makeText(this, "Your password doesn't match confirmation, check again", Toast.LENGTH_LONG).show();
                 return;
             } else {
-                // everything is ok!
-                RegisterTask registerTask = new RegisterTask(RegisterActivity.this);
-                registerTask.setMessageLoading("Registering new account...");
-                registerTask.execute(REGISTER_API_ENDPOINT_URL);
+                Toast.makeText(self, "Registering...",Toast.LENGTH_LONG).show();
+                new MyAsyncTask().execute();
             }
         }
     }
-    private class RegisterTask extends UrlJsonAsyncTask {
-        public RegisterTask(Context context) {
-            super(context);
+
+    public boolean isValidEmailAddress(String email) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(".+@.+\\.[a-z]+");
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
+    public void register() throws Exception {
+        //Do a get request and grab data
+        URL url = new URL("http://timewastr.herokuapp.com/register/" + mUserEmail + "/" + mUserPassword);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"), 8);
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null)
+        {
+            sb.append(line + "\n");
         }
+        response = sb.toString();
+        reader.close();
+    }
 
+    public void registerComplete() throws JSONException {
+        JSONObject data = new JSONObject(response);
+        MyApp app = ((MyApp)getApplicationContext());
+        app.setToken(data.getString("token"));
+        Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+        startActivity(i);
+    }
+
+    public class MyAsyncTask extends AsyncTask<String, Integer, Integer>{
         @Override
-        protected JSONObject doInBackground(String... urls) {
-            DefaultHttpClient client = new DefaultHttpClient();
-            HttpPost post = new HttpPost(urls[0]);
-            JSONObject holder = new JSONObject();
-            JSONObject userObj = new JSONObject();
-            String response = null;
-            JSONObject json = new JSONObject();
-
+        // THIS IS THE TASK TO DO
+        protected Integer doInBackground(String... params) {
             try {
-                try {
-                    // setup the returned values in case
-                    // something goes wrong
-                    json.put("success", false);
-                    json.put("info", "Something went wrong. Retry!");
-
-                    // add the users's info to the post params
-                    userObj.put("email", mUserEmail);
-                    userObj.put("name", mUserName);
-                    userObj.put("password", mUserPassword);
-                    userObj.put("password_confirmation", mUserPasswordConfirmation);
-                    holder.put("user", userObj);
-                    StringEntity se = new StringEntity(holder.toString());
-                    post.setEntity(se);
-
-                    // setup the request headers
-                    post.setHeader("Accept", "application/json");
-                    post.setHeader("Content-Type", "application/json");
-
-                    ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                    response = client.execute(post, responseHandler);
-                    json = new JSONObject(response);
-
-                } catch (HttpResponseException e) {
-                    e.printStackTrace();
-                    Log.e("ClientProtocol", "" + e);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("IO", "" + e);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.e("JSON", "" + e);
-            }
-
-            return json;
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject json) {
-            try {
-                if (json.getBoolean("success")) {
-                    // everything is ok
-                    SharedPreferences.Editor editor = mPreferences.edit();
-                    // save the returned auth_token into
-                    // the SharedPreferences
-                    editor.putString("AuthToken", json.getJSONObject("data").getString("auth_token"));
-                    editor.commit();
-
-                    // launch the HomeActivity and close this one
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-                Toast.makeText(context, json.getString("info"), Toast.LENGTH_LONG).show();
+                register();
             } catch (Exception e) {
-                // something went wrong: show a Toast
-                // with the exception message
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-            } finally {
-                super.onPostExecute(json);
+                e.printStackTrace();
+                return null;
+            }
+            return 1;
+        }
+        // THIS IS WHEN TASK IS COMPLETED
+        protected void onPostExecute(Integer result){
+            if (result == null) {
+                Toast.makeText(self, "An account with that email already exists",Toast.LENGTH_LONG).show();
+            } else {
+                try {
+                    registerComplete();
+                } catch (JSONException e) {
+                    Toast.makeText(self, "There was a problem, please try again",Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
             }
         }
     }

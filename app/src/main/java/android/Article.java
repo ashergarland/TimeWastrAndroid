@@ -17,6 +17,7 @@ public class Article implements Parcelable{
     public String picture;
     public String author;
     public int time;
+    public boolean favorite;
 
     public Article (String title, String published, String link, String content, String picture, String author, int time) {
         this.title = title;
@@ -26,6 +27,7 @@ public class Article implements Parcelable{
         this.picture = picture;
         this.time = time;
         this.author = author;
+        this.favorite = false;
     }
 
     public Article(Parcel in)
@@ -37,6 +39,7 @@ public class Article implements Parcelable{
         this.picture = in.readString();
         this.time = in.readInt();
         this.author = in.readString();
+        this.favorite = false;
     }
 
     @Override

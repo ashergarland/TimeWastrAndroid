@@ -5,6 +5,7 @@ import android.ToastSingleton;
 import android.UrlJsonAsyncTask;
 import android.app.Activity;
 import android.content.*;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -26,20 +27,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.http.impl.client.BasicResponseHandler;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.*;
+import java.util.Map;
 
 public class LoginActivity extends Activity {
-
-    private EditText username=null;
-    private EditText password=null;
     private Button login;
     private Button register;
-
-    private final static String LOGIN_API_ENDPOINT_URL = "http://0.0.0.0:3000/api/v1/sessions";
     public static SharedPreferences mPreferences;
     public static String mUserEmail;
     public static String mUserPassword;
@@ -56,6 +59,10 @@ public class LoginActivity extends Activity {
         super.onStop();
         EasyTracker.getInstance(this).activityStop(this);
     }
+    String response;
+    MyApp app;
+
+    Context self = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,26 +70,7 @@ public class LoginActivity extends Activity {
         Crashlytics.start(this);
 
         setContentView(R.layout.activity_login);
-        /*mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
-
-        findViewById(R.id.registerButton).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // No account, load new account view
-                        Intent intent = new Intent(LoginActivity.this,
-                                RegisterActivity.class);
-                        startActivityForResult(intent, 0);
-                    }
-                });*/
-        login = (Button)findViewById(R.id.loginButton);
-        login.setOnClickListener(new View.OnClickListener(){
-
-            public void onClick(View v){
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(i);
-            }
-        });
+        app = ((MyApp)getApplicationContext());
 
         register = (Button)findViewById(R.id.registerButton);
         register.setOnClickListener(new View.OnClickListener(){
@@ -92,37 +80,9 @@ public class LoginActivity extends Activity {
                 startActivity(i);
             }
         });
-
-        //username = (EditText)findViewById(R.id.userEmail);
-        //password = (EditText)findViewById(R.id.userPassword);
-
-        //works before
-        /*login = (Button)findViewById(R.id.button1);
-        mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
-        login.setOnClickListener(new View.OnClickListener(){
-
-            public void onClick(View v){
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(i);
-            }
-        });*/
-
     }
 
-    /*public void login(View view){
-        if(username.getText().toString().equals("admin") &&
-                password.getText().toString().equals("admin")){
-            Toast.makeText(getApplicationContext(), "Redirecting...",
-                    Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(getApplicationContext(), "Wrong Credentials",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-    }*/
-/*COMMENT
-    public void login(View button) {
+    public void loginTriggered(View button) {
         EditText userEmailField = (EditText) findViewById(R.id.mUserEmail);
         mUserEmail = userEmailField.getText().toString();
         EditText userPasswordField = (EditText) findViewById(R.id.userPassword);
@@ -134,140 +94,78 @@ public class LoginActivity extends Activity {
                     Toast.LENGTH_LONG).show();
             return;
         } else {
-            LoginTask loginTask = new LoginTask(LoginActivity.this);
-            loginTask.setMessageLoading("Logging in...");
-            loginTask.execute(LOGIN_API_ENDPOINT_URL);
+            Toast.makeText(this, "Logging in...",Toast.LENGTH_LONG).show();
+            new MyAsyncTask().execute();
         }
     }
-*/
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
-/*
-    private void loadTasksFromAPI(String url) {
-        GetTasksTask getTasksTask;
-        getTasksTask = new GetTasksTask(LoginActivity.this);
-        getTasksTask.setMessageLoading("Loading tasks...");
-        getTasksTask.execute(url + "?auth_token=" + mPreferences.getString("AuthToken", ""));
+
+    public void login() throws Exception {
+        //Do a get request and grab data
+        URL url = new URL("http://timewastr.herokuapp.com/login");
+        Map<String,Object> params = new LinkedHashMap();
+        params.put("email", mUserEmail);
+        params.put("password", mUserPassword);
+        StringBuilder postData = new StringBuilder();
+        for (Map.Entry<String,Object> param : params.entrySet()) {
+            if (postData.length() != 0) postData.append('&');
+            postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+            postData.append('=');
+            postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+        }
+        byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+        conn.setDoOutput(true);
+        conn.getOutputStream().write(postDataBytes);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"), 8);
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null)
+        {
+            sb.append(line + "\n");
+        }
+        response = sb.toString();
+        reader.close();
     }
 
-    private class GetTasksTask extends UrlJsonAsyncTask {
-        public GetTasksTask(Context context) {
-            super(context);
-        }
+    public void loginComplete() throws JSONException {
+        JSONObject data = new JSONObject(response);
+        app.setToken(data.getString("token"));
+        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(i);
+    }
 
+    public class MyAsyncTask extends AsyncTask<String, Integer, Integer> {
         @Override
-        protected void onPostExecute(JSONObject json) {
+        // THIS IS THE TASK TO DO
+        protected Integer doInBackground(String... params) {
             try {
-                JSONArray jsonTasks = json.getJSONObject("data").getJSONArray("tasks");
-                int length = jsonTasks.length();
-                List<String> tasksTitles = new ArrayList<String>(length);
-
-                for (int i = 0; i < length; i++) {
-                    tasksTitles.add(jsonTasks.getJSONObject(i).getString("title"));
-                }
-COMMENT*/
-                /*ListView tasksListView = (ListView) findViewById (R.id.tasks_list_view);
-                if (tasksListView != null) {
-                    tasksListView.setAdapter(new ArrayAdapter<String>(LoginActivity.this,
-                            android.R.layout.simple_list_item_1, tasksTitles));
-                }*/
-           /*COMMENT } catch (Exception e) {
-                Toast.makeText(context, e.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            } finally {
-                super.onPostExecute(json);
-            }
-        }
-    }COMMENT*/
-/*COMMENT
-    // file: LoginActivity.java
-    class LoginTask extends UrlJsonAsyncTask {
-        public LoginTask(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... urls) {
-            DefaultHttpClient client = new DefaultHttpClient();
-            HttpPost post = new HttpPost(urls[0]);
-            JSONObject holder = new JSONObject();
-            JSONObject userObj = new JSONObject();
-            String response = null;
-            JSONObject json = new JSONObject();
-
-            try {
-                try {
-                    // setup the returned values in case
-                    // something goes wrong
-                    json.put("success", false);
-                    json.put("info", "Something went wrong. Retry!");
-                    // add the user email and password to
-                    // the params
-//                    String mUserEmail = LoginActivity.mUserEmail;
-//                    String mUserPassword = LoginActivity.mUserPassword;
-                    userObj.put("email", mUserEmail);
-                    userObj.put("password", mUserPassword);
-                    holder.put("user", userObj);
-                    StringEntity se = new StringEntity(holder.toString());
-                    post.setEntity(se);
-
-                    // setup the request headers
-                    post.setHeader("Accept", "application/json");
-                    post.setHeader("Content-Type", "application/json");
-
-                    ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                    response = client.execute(post, responseHandler);
-                    json = new JSONObject(response);
-
-                } catch (HttpResponseException e) {
-                    e.printStackTrace();
-                    Log.e("ClientProtocol", "" + e);
-                    json.put("info", "Email and/or password are invalid. Retry!");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("IO", "" + e);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.e("JSON", "" + e);
-            }
-
-            return json;
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject json) {
-            try {
-                if (json.getBoolean("success")) {
-                    // everything is ok
-                    SharedPreferences mPreferences = LoginActivity.mPreferences;
-                    SharedPreferences.Editor editor = mPreferences.edit();
-                    // save the returned auth_token into
-                    // the SharedPreferences
-                    editor.putString("AuthToken", json.getJSONObject("data").getString("auth_token"));
-                    editor.commit();
-
-                    // launch the HomeActivity and close this one
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-                Toast.makeText(context, json.getString("info"), Toast.LENGTH_LONG).show();
+                login();
             } catch (Exception e) {
-                // something went wrong: show a Toast
-                // with the exception message
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-            } finally {
-                super.onPostExecute(json);
+                e.printStackTrace();
+                return null;
+            }
+            return 1;
+        }
+        // THIS IS WHEN TASK IS COMPLETED
+        protected void onPostExecute(Integer result){
+            if (result == null) {
+                Toast.makeText(self, "Your email or password are wrong",Toast.LENGTH_LONG).show();
+            } else {
+                try {
+                    loginComplete();
+                } catch (JSONException e) {
+                    Toast.makeText(self, "There was a problem, please try again",Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-COMMENT*/
 }
 
 

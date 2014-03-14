@@ -12,7 +12,7 @@
         android:id="@+id/textView1"
         android:layout_width="320dp"
         android:layout_height="75dp"
-        android:src="@drawable/timewastr"
+        android:src="@drawable/logo_main_hd"
         android:adjustViewBounds="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -30,7 +30,7 @@
             android:id="@+id/userEmailText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:fontFamily="Neou"
             android:text="EMAIL"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -50,38 +50,16 @@
         </EditText>
 
         <TextView
-            android:id="@+id/userNameText"
-            android:layout_marginTop="0dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="Neou"
-            android:text="USERNAME"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_below="@+id/userEmail"
-            android:layout_alignLeft="@+id/userEmail"
-            android:layout_alignStart="@+id/userEmail" />
-
-        <EditText
-            android:id="@+id/userName"
-            android:shadowColor="#ffad56"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="User Name"
-            android:inputType="text"
-            android:layout_below="@+id/userNameText"/>
-
-        <TextView
             android:id="@+id/userPasswordText"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="Neou"
             android:text="PASSWORD"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_below="@+id/userName"
-            android:layout_alignLeft="@+id/userName"
-            android:layout_alignStart="@+id/userName" />
+            android:layout_below="@+id/userEmail"
+            android:layout_alignLeft="@+id/userEmail"
+            android:layout_alignStart="@+id/userEmail" />
 
         <EditText
             android:id="@+id/userPassword"
@@ -95,7 +73,7 @@
 
         <TextView
             android:id="@+id/userPasswordConfirmationText"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="Neou"
@@ -117,7 +95,7 @@
 
         <Button
             android:id="@+id/registerButton"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:fontFamily="Calibri"
@@ -131,104 +109,6 @@
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_marginTop="0dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="Neou"
-        android:text="___________________      __________________"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/relativeLayout2"/>
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="Neou"
-        android:text="                                 OR"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/relativeLayout2"/>
-
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:orientation="horizontal"
-        android:layout_below="@+id/textView5"
-        android:weightSum="1">
-
-        <RelativeLayout
-            android:id="@+id/relativeLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".5"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/relativeLayout2" >
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_marginRight="1dp"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:fontFamily="Neou"
-                android:layout_weight=".5"
-                android:background="#ffad56"
-                android:textColor="#fff"
-                android:textSize="23dp"
-                android:onClick="facebookLogin"
-                android:gravity="right"
-                android:text="FACEBOOK "
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-            <ImageView
-                android:id="@+id/imageView1"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@drawable/facebook"
-                android:adjustViewBounds="true"
-                android:contentDescription="facebook"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/relativeLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".5"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/relativeLayout2" >
-            <Button
-                android:id="@+id/button3"
-                android:layout_width="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_height="35dp"
-                android:fontFamily="Neou"
-                android:background="#ffad56"
-                android:textColor="#fff"
-                android:textSize="23sp"
-                android:onClick="googleLogin"
-                android:gravity="right"
-                android:text="GOOGLE+ "
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@drawable/google"
-                android:adjustViewBounds="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignLeft="@+id/button3"
-                android:layout_alignStart="@+id/button3" />
-        </RelativeLayout>
-
-    </LinearLayout>
 
 
 </RelativeLayout>
