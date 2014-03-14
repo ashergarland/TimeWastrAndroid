@@ -1,6 +1,7 @@
 package timewastr.app; /**
  * Created by Zawu on 2/10/14.
  */
+import android.ToastSingleton;
 import android.UrlJsonAsyncTask;
 import android.app.Activity;
 import android.content.*;
@@ -28,6 +29,8 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.*;
 
 public class LoginActivity extends Activity {
 
@@ -40,6 +43,19 @@ public class LoginActivity extends Activity {
     public static SharedPreferences mPreferences;
     public static String mUserEmail;
     public static String mUserPassword;
+    private EasyTracker easyTracker = null;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import java.util.Arrays;
 
 /**
@@ -29,6 +31,18 @@ public class FavoritesActivity extends ListActivity {
     String[] articleTitles;
     String[] articleLinks;
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {

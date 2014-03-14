@@ -3,6 +3,7 @@ package timewastr.app;
 import android.Article;
 import android.DataWrapper;
 import android.OnSwipeTouchListener;
+import android.ToastSingleton;
 import android.app.*;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -16,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.analytics.tracking.android.EasyTracker;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -48,6 +51,19 @@ public class ArticleActivity extends Activity {
     ArrayList<Article> articles = new ArrayList<Article>();
 //    int totalArticleCount = 1;
     int currentArticle = 0;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
