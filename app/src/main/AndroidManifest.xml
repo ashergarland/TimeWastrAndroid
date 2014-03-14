@@ -38,6 +38,10 @@
             android:label="@string/favorites" >
         </activity>
         <activity
+            android:name="timewastr.app.FavoritesRenderActivity"
+            android:label="@string/favorites" >
+        </activity>
+        <activity
             android:name="timewastr.app.LoadingActivity"
             android:label="@string/title_activity_loading"
             android:noHistory="true">

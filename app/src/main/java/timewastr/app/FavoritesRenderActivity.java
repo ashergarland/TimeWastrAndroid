@@ -39,13 +39,14 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 /**
- * Created by Skylar on 3/10/14.
+ * Created by Chu on 3/14/14.
  */
-public class FavoritesActivity extends ListActivity {
+public class FavoritesRenderActivity extends ListActivity {
     MyApp app;
     String response;
     ArrayList<String> articleTitles = new ArrayList<String>();
     ArrayList<String> articleLinks = new ArrayList<String>();
+
     String link = "";
     boolean loading = true;
     Context self = this;
@@ -69,9 +70,9 @@ public class FavoritesActivity extends ListActivity {
 
         app = ((MyApp)getApplicationContext());
 
-        new MyAsyncTask().execute();
-
-        System.out.println("PRINTING AFTER ASYNC");
+        Bundle b = this.getIntent().getExtras();
+        articleLinks = b.getStringArrayList("articleLinks");
+        articleTitles = b.getStringArrayList("articleTitles");
         System.out.println(articleLinks);
         System.out.println(articleTitles);
         setListAdapter(new ArrayAdapter<String>(this, R.layout.activity_favorites, articleTitles));
@@ -119,14 +120,14 @@ public class FavoritesActivity extends ListActivity {
     }
 
     public void openHome() {
-        Intent i = new Intent(FavoritesActivity.this, MainActivity.class);
+        Intent i = new Intent(FavoritesRenderActivity.this, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }
 
     public void openFavorites() {
-        Intent i = new Intent(FavoritesActivity.this, FavoritesActivity.class);
+        Intent i = new Intent(FavoritesRenderActivity.this, FavoritesActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
@@ -136,88 +137,16 @@ public class FavoritesActivity extends ListActivity {
         SignOut signout = new SignOut(app.getToken());
         signout.execute();
         app.setToken("");
-        Intent i = new Intent(FavoritesActivity.this, LoginActivity.class);
+        Intent i = new Intent(FavoritesRenderActivity.this, LoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }
 
-    public void query() throws Exception {
-        URL url;
-        if (loading) {
-            url = new URL("http://timewastr.herokuapp.com/favorites/list/" + app.getToken());
-        } else {
-            url = new URL("http://timewastr.herokuapp.com/favorites/remove/" + app.getToken() + "/?articleLink=" + URLEncoder.encode(link, "UTF-8"));
-        }
-        //Do a get request and grab data
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"), 8);
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null)
-        {
-            sb.append(line + "\n");
-        }
-        response = sb.toString();
-        System.out.println(response);
-        reader.close();
+    //Disables back button on certain pages
+    public void onBackPressed() {
+        System.out.println("BACK PRESSED FAVORITES PAGE");
     }
 
-    public void queryComplete() throws JSONException {
-        JSONObject data = new JSONObject(response);
-        if (loading) {
-            System.out.println(response);
-            Iterator<?> keys = data.keys();
 
-            while (keys.hasNext()) {
-                String key = (String)keys.next();
-                if (data.get(key) instanceof JSONObject) {
-                    //Make sure the key is a JSON object, we don't want null values
-                    JSONObject nestedData = data.getJSONObject(key);
-                    System.out.println("ADDING TITLE: " + nestedData.getString("title"));
-                    System.out.println("ADDING URL: " + nestedData.getString("articleLink"));
-                    articleTitles.add(nestedData.getString("title"));
-                    articleLinks.add(nestedData.getString("articleLink"));
-                }
-            }
-            System.out.println("Exiting While loop");
-        } else {
-            Toast.makeText(FavoritesActivity.this, "Done", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public class MyAsyncTask extends AsyncTask<String, Void, Integer> {
-        @Override
-        // THIS IS THE TASK TO DO
-        protected Integer doInBackground(String... params) {
-            try {
-                query();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-            return 1;
-        }
-        // THIS IS WHEN TASK IS COMPLETED
-        @Override
-        protected void onPostExecute(Integer result){
-            try {
-                queryComplete();
-            } catch (JSONException e) {
-                Toast.makeText(self, "There was a problem, please try again",Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-            }
-            if (loading) {
-                loading = false;
-            }
-            Intent i = new Intent(FavoritesActivity.this, FavoritesRenderActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            i.putExtra("articleTitles", articleTitles);
-            i.putExtra("articleLinks", articleLinks);
-            startActivity(i);
-
-        }
-    }
 }
