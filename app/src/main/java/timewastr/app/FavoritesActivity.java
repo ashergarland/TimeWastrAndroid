@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.util.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +58,9 @@ public class FavoritesActivity extends ListActivity {
 
         new MyAsyncTask().execute();
 
+        System.out.println("PRINTING AFTER ASYNC");
+        System.out.println(articleLinks);
+        System.out.println(articleTitles);
         setListAdapter(new ArrayAdapter<String>(this, R.layout.activity_favorites, articleTitles));
 
         ListView listView = getListView();
@@ -67,10 +71,13 @@ public class FavoritesActivity extends ListActivity {
                 // When clicked, get the link and open it in browser
                 link = articleLinks.get((articleTitles).indexOf(((TextView) view).getText().toString()));
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                browserIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                browserIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(browserIntent);
             }
         });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,11 +107,15 @@ public class FavoritesActivity extends ListActivity {
 
     public void openHome() {
         Intent i = new Intent(FavoritesActivity.this, MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }
 
     public void openFavorites() {
         Intent i = new Intent(FavoritesActivity.this, FavoritesActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }
 
@@ -113,6 +124,8 @@ public class FavoritesActivity extends ListActivity {
         signout.execute();
         app.setToken("");
         Intent i = new Intent(FavoritesActivity.this, LoginActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }
 
@@ -142,7 +155,6 @@ public class FavoritesActivity extends ListActivity {
         JSONObject data = new JSONObject(response);
         if (loading) {
             System.out.println(response);
-            int dataLength = data.length();
             Iterator<?> keys = data.keys();
 
             while (keys.hasNext()) {
@@ -150,16 +162,19 @@ public class FavoritesActivity extends ListActivity {
                 if (data.get(key) instanceof JSONObject) {
                     //Make sure the key is a JSON object, we don't want null values
                     JSONObject nestedData = data.getJSONObject(key);
+                    System.out.println("ADDING TITLE: " + nestedData.getString("title"));
+                    System.out.println("ADDING URL: " + nestedData.getString("articleLink"));
                     articleTitles.add(nestedData.getString("title"));
                     articleLinks.add(nestedData.getString("articleLink"));
                 }
             }
+            System.out.println("Exiting While loop");
         } else {
             Toast.makeText(FavoritesActivity.this, "Done", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public class MyAsyncTask extends AsyncTask<String, Integer, Integer> {
+    public class MyAsyncTask extends AsyncTask<String, Void, Integer> {
         @Override
         // THIS IS THE TASK TO DO
         protected Integer doInBackground(String... params) {
@@ -172,6 +187,7 @@ public class FavoritesActivity extends ListActivity {
             return 1;
         }
         // THIS IS WHEN TASK IS COMPLETED
+        @Override
         protected void onPostExecute(Integer result){
             try {
                 queryComplete();
@@ -182,6 +198,7 @@ public class FavoritesActivity extends ListActivity {
             if (loading) {
                 loading = false;
             }
+        return;
         }
     }
 }

@@ -118,7 +118,8 @@ public class MainActivity extends ActionBarActivity {
                 tech = ((ToggleButton)findViewById(R.id.tech)).isChecked();
 
                 Intent i = new Intent(MainActivity.this, LoadingActivity.class);
-
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 i.putExtra("time", time);
                 i.putExtra("news", news);
                 i.putExtra("health", health);
@@ -167,11 +168,15 @@ public class MainActivity extends ActionBarActivity {
 
     public void openHome() {
         Intent i = new Intent(MainActivity.this, MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }
 
     public void openFavorites() {
         Intent i = new Intent(MainActivity.this, FavoritesActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }
 
@@ -180,7 +185,14 @@ public class MainActivity extends ActionBarActivity {
         signout.execute();
         app.setToken("");
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
+    }
+
+    //Disables back button on certain pages
+    public void onBackPressed() {
+        System.out.println("BACK PRESSED MAIN PAGE");
     }
 
     /**

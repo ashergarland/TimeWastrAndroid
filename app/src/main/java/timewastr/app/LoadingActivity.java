@@ -106,6 +106,8 @@ public class LoadingActivity extends ActionBarActivity {
             }
 
             Intent i = new Intent(LoadingActivity.this, ArticleActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
 //        Bundle data = new Bundle();
 //        data.putParcelableArrayList("articles", articles);

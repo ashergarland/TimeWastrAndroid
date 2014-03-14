@@ -58,6 +58,8 @@ public class LoginActivity extends Activity {
 
             public void onClick(View v){
                 Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
             }
         });

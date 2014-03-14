@@ -100,6 +100,8 @@ public class ArticleActivity extends Activity {
                 {*/
                     if (currentArticle == articles.size() - 1) {
                         Intent i = new Intent(ArticleActivity.this, MainActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(i);
                     } else {
                         Toast.makeText(ArticleActivity.this, "Next Article", Toast.LENGTH_SHORT).show();
@@ -283,6 +285,12 @@ public class ArticleActivity extends Activity {
             star.setTag("starOn");
             star.setImageResource(getResources().getIdentifier("android:drawable/btn_star_big_on", null, getPackageName()));
         }
+    }
+
+
+    //Disables back button on certain pages
+    public void onBackPressed() {
+        System.out.println("BACK PRESSED Article PAGE");
     }
 
     @Override

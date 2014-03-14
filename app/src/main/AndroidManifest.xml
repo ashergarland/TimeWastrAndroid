@@ -26,7 +26,7 @@
         </activity>
         <activity
             android:name="timewastr.app.MainActivity"
-            android:label="@string/main" >
+            android:label="@string/main">
         </activity>
         <activity
             android:name="timewastr.app.ArticleActivity"
@@ -38,7 +38,8 @@
         </activity>
         <activity
             android:name="timewastr.app.LoadingActivity"
-            android:label="@string/title_activity_loading" >
+            android:label="@string/title_activity_loading"
+            android:noHistory="true">
         </activity>
     </application>
 
