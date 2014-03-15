@@ -92,7 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="Neou"
-        android:text="___________________          ___________________"
+        android:text="________________           ________________"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/relativeLayout2"/>
 
@@ -102,7 +102,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="Neou"
-        android:text="                                    OR"
+        android:text="                                 OR"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/relativeLayout2"/>
 
