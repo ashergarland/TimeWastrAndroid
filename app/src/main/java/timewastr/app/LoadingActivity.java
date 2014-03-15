@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import org.apache.http.HttpResponse;
@@ -66,6 +67,8 @@ public class LoadingActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Crashlytics.start(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 

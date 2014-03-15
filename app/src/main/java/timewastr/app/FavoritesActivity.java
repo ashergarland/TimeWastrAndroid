@@ -25,6 +25,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.util.*;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,6 +66,8 @@ public class FavoritesActivity extends ListActivity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Crashlytics.start(this);
+
         super.onCreate(savedInstanceState);
 
         app = ((MyApp)getApplicationContext());
