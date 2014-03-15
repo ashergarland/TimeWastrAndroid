@@ -20,6 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import org.apache.http.HttpEntity;
@@ -79,6 +80,7 @@ public class ArticleActivity extends Activity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Crashlytics.start(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
         app = ((MyApp)getApplicationContext());

@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import org.apache.http.HttpResponse;
@@ -62,6 +63,8 @@ public class RegisterActivity extends Activity{
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Crashlytics.start(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
