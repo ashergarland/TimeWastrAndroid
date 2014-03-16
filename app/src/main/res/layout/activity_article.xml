@@ -6,7 +6,7 @@
     tools:context=".timewastr.app.ArticleActivity">
 
     <RelativeLayout
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:background="#C0C0C0"
         android:orientation="horizontal"
         android:layout_width="match_parent">
@@ -14,12 +14,14 @@
         <TextView
             android:id="@+id/articleTitle"
             android:layout_width="300dp"
-            android:layout_height="50dp"
+            android:layout_height="80dp"
             android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
             android:text="Title of article"
             android:fontFamily="Neou"
-            android:textSize="12dp"
-            android:layout_marginTop="13dp"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:layout_marginTop="0dp"
             android:layout_marginLeft="20dp"/>
         <ImageButton
             android:id="@+id/favorite"
@@ -35,17 +37,18 @@
             android:onClick="favorite"/>
         <!-- your rest of layout elements -->
     </RelativeLayout>
-
     <RelativeLayout
         android:layout_height="match_parent"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="10dp"
+        android:weightSum="1"
         android:orientation="horizontal"
         android:layout_width="match_parent">
         <ScrollView
             android:id="@+id/sv1"
             android:layout_marginTop="50dp"
+            android:layout_weight="0.5"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center">
@@ -58,11 +61,6 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
         </ScrollView>
-        <!--<android.support.v4.view.ViewPager-->
-            <!--android:id="@+id/viewPager"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--/>-->
     </RelativeLayout>
 
 </RelativeLayout>

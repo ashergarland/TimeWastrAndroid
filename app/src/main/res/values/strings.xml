@@ -7,7 +7,7 @@
     <string name="main">TimeWastr - Home</string>
     <string name="favorites">Favorite Articles</string>
     <string name="sign_out">Sign Out</string>
-    <string name="title_activity_loading">Loading Activity</string>
+    <string name="title_activity_loading">TimeWastr - Loading Activity</string>
     <string name="title_activity_article">TimeWastr - Articles</string>
 
 </resources>

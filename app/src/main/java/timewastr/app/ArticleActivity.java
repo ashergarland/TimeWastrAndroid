@@ -1,21 +1,30 @@
 package timewastr.app;
 
 import android.Article;
-import android.DataWrapper;
 import android.OnSwipeTouchListener;
-import android.ToastSingleton;
 import android.SignOut;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,14 +32,6 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,17 +46,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by Zawu on 2/10/14.
  */
 public class ArticleActivity extends Activity {
-
-    TextView tv1;
+    Bitmap currentImage;
+    ImageView articleImage;
+    TextView articleContent;
     TextView articleTitle;
-    ScrollView sv1;
+    ScrollView scrollView;
     OnSwipeTouchListener onSwipeTouchListener;
     ArrayList<Article> articles = new ArrayList<Article>();
     int currentArticle = 0;
@@ -85,14 +85,6 @@ public class ArticleActivity extends Activity {
         setContentView(R.layout.activity_article);
         app = ((MyApp)getApplicationContext());
 
-//        DataWrapper dw = (DataWrapper) getIntent().getSerializableExtra("data");
-//        articles = dw.getArticles();
-//
-//        System.out.println("PRINTING ARTICLE IN ARTICLE ");
-//        for(Article a: articles)
-//        {
-//            System.out.print(a.title + " " + a.time);
-//        }
         Bundle b = this.getIntent().getExtras();
         articles = b.getParcelableArrayList("articles");
 //        System.out.println("IN ACTIVITY " + b.getString("test"));
@@ -101,21 +93,11 @@ public class ArticleActivity extends Activity {
         {
             System.out.print(a.title + " " + a.time);
         }
-
-        tv1 = (TextView)findViewById(R.id.tv1);
-        sv1 = (ScrollView)findViewById(R.id.sv1);
+        articleContent = (TextView)findViewById(R.id.tv1);
+        scrollView = (ScrollView)findViewById(R.id.sv1);
         articleTitle = (TextView)findViewById(R.id.articleTitle);
-        onSwipeTouchListener = new OnSwipeTouchListener(sv1.getContext()) {
+        onSwipeTouchListener = new OnSwipeTouchListener(scrollView.getContext()) {
             public void onSwipeLeft() {
-                /*if(totalArticleCount == currentArticle)//If at the newest article
-                {
-                    Toast.makeText(ArticleActivity.this, "New Article", Toast.LENGTH_SHORT).show();
-                    currentArticle++;
-                    totalArticleCount++;
-                    getNewArticle();
-                }
-                else if(currentArticle < totalArticleCount )//If at an previous article
-                {*/
                     if (currentArticle == articles.size() - 1) {
                         Intent i = new Intent(ArticleActivity.this, MainActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -126,7 +108,6 @@ public class ArticleActivity extends Activity {
                         currentArticle++;
                         getNewArticle();
                     }
-//                }
             }
             public void onSwipeRight() {
                 if(currentArticle != 0) {
@@ -138,7 +119,7 @@ public class ArticleActivity extends Activity {
 
         };
 
-        sv1.setOnTouchListener(onSwipeTouchListener);
+        scrollView.setOnTouchListener(onSwipeTouchListener);
 
         loadDoc();
     }
@@ -283,15 +264,25 @@ public class ArticleActivity extends Activity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String pictures = articles.get(currentArticle).picture;
+        String pictureURL = articles.get(currentArticle).picture;
         String link = "View original article at <a href='" + articles.get(currentArticle).link + "'>" + articles.get(currentArticle).link + "</a>";
         String articleContent =  articles.get(currentArticle).content;
-        String authorPublish = "By " + author + " on " + publishedOn;
-        tv1.setText(authorPublish + "\n\n" + Html.fromHtml(articleContent) + "\n\n" + Html.fromHtml(link));
-        sv1.postDelayed(new Runnable() {
+        String authorPublish = "By " + author + " on " + publishedOn + "\n\n";
+        SpannableStringBuilder ssb = new SpannableStringBuilder(authorPublish + " " + Html.fromHtml(articleContent) + "\n\n" + Html.fromHtml(link));
+        if(pictureURL != null)//Handle adding a picture to the textview here
+        {
+            ssb = new SpannableStringBuilder(authorPublish + " \n\n" + Html.fromHtml(articleContent) + "\n\n" + Html.fromHtml(link));
+            System.out.println("TESTING PICTURE URL: " + pictureURL);
+            new DownloadImageTask().execute(pictureURL);
+            ImageSpan imageSpan = new ImageSpan(this, currentImage);
+            ssb.setSpan(imageSpan, authorPublish.length(), authorPublish.length()+1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        }
+        this.articleContent.setText(ssb, TextView.BufferType.SPANNABLE);
+        scrollView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                sv1.fullScroll(ScrollView.FOCUS_UP);
+                scrollView.fullScroll(ScrollView.FOCUS_UP);
             }
         }, 600);
 
@@ -315,6 +306,29 @@ public class ArticleActivity extends Activity {
     public boolean dispatchTouchEvent(MotionEvent ev){
         onSwipeTouchListener.getGestureDetector().onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+
+        public DownloadImageTask() {}
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            currentImage = result;
+        }
     }
 
 }
