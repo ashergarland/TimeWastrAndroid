@@ -47,8 +47,7 @@
         <activity
             android:name="timewastr.app.FavoritesRenderActivity"
             android:screenOrientation="portrait"
-            android:label="@string/favorites"
-            android:noHistory="true" >
+            android:label="@string/favorites" >
         </activity>
         <activity
             android:name="timewastr.app.FavoritesDeletedActivity"
