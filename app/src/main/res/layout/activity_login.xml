@@ -43,6 +43,7 @@
             android:ems="10"
             android:hint="User Name"
             android:layout_below="@+id/userEmailText"
+            android:inputType="textVisiblePassword"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true">
             <requestFocus />

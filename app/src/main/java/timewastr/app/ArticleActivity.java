@@ -69,9 +69,18 @@ public class ArticleActivity extends Activity {
 
     @Override
     public void onStop() {
+        setResult(2);
         super.onStop();
         EasyTracker.getInstance(this).activityStop(this);
     }
+
+    @Override
+    protected void onDestroy() {
+        setResult(2);
+        super.onDestroy();
+    }
+
+
     boolean adding = false;
     Context self = this;
     String response;

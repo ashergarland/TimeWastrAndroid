@@ -94,7 +94,14 @@ public class LoadingActivity extends ActionBarActivity {
 
         System.out.println("----BEGIN POST-----");*/
         new MyAsyncTask().execute();
-//        progress.dismiss();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode==2){
+            finish();
+        }
     }
 
     public class MyAsyncTask extends AsyncTask<String, Integer, Double>{
@@ -130,7 +137,7 @@ public class LoadingActivity extends ActionBarActivity {
 //        data.putParcelableArrayList("articles", articles);
 //            i.putExtra("articles", new DataWrapper(articles));
             i.putExtra("articles", articles);
-            startActivity(i);
+            startActivityForResult(i, 2);
 
             // transition to article via intent, passing in new article array
 
