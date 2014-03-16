@@ -23,22 +23,32 @@
         <activity
             android:name="timewastr.app.RegisterActivity"
             android:label="title_activity_register"
+            android:screenOrientation="portrait"
             android:noHistory="true" >
         </activity>
         <activity
             android:name="timewastr.app.MainActivity"
+            android:screenOrientation="portrait"
             android:label="@string/main">
         </activity>
         <activity
             android:name="timewastr.app.ArticleActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_article" >
         </activity>
         <activity
             android:name="timewastr.app.FavoritesActivity"
+            android:screenOrientation="portrait"
             android:label="@string/favorites" >
         </activity>
         <activity
             android:name="timewastr.app.FavoritesRenderActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/favorites" >
+        </activity>
+        <activity
+            android:name="timewastr.app.FavoritesDeletedActivity"
+            android:screenOrientation="portrait"
             android:label="@string/favorites" >
         </activity>
         <activity

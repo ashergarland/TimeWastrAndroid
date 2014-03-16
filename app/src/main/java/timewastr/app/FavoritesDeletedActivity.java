@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -41,14 +40,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 /**
- * Created by Chu on 3/14/14.
+ * Created by Skylar on 3/10/14.
  */
-public class FavoritesRenderActivity extends ListActivity {
+public class FavoritesDeletedActivity extends ListActivity {
     MyApp app;
     String response;
     ArrayList<String> articleTitles = new ArrayList<String>();
     ArrayList<String> articleLinks = new ArrayList<String>();
-    String deletedLink = "";
     String link = "";
     boolean loading = true;
     Context self = this;
@@ -64,19 +62,22 @@ public class FavoritesRenderActivity extends ListActivity {
         super.onStop();
         EasyTracker.getInstance(this).activityStop(this);
     }
-
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        //Crashlytics.start(this);
+        Crashlytics.start(this);
 
         super.onCreate(savedInstanceState);
 
         app = ((MyApp)getApplicationContext());
-
         Bundle b = this.getIntent().getExtras();
-        articleLinks = b.getStringArrayList("articleLinks");
-        articleTitles = b.getStringArrayList("articleTitles");
+        link = b.getString("deletedLink");
+        System.out.println(link);
+
+        new MyAsyncTask().execute();
+
+        System.out.println("PRINTING AFTER ASYNC");
         System.out.println(articleLinks);
         System.out.println(articleTitles);
         setListAdapter(new ArrayAdapter<String>(this, R.layout.activity_favorites, articleTitles));
@@ -94,31 +95,8 @@ public class FavoritesRenderActivity extends ListActivity {
                 startActivity(browserIntent);
             }
         });
-
-        registerForContextMenu(listView);
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-        menu.setHeaderTitle("Delete \"" + articleTitles.get(info.position) + "\"?");
-        deletedLink = articleLinks.get(info.position);
-        menu.add(Menu.NONE, 0, 0, "Delete");
-        menu.add(Menu.NONE, 1, 1, "Cancel");
-    }
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case 0:
-                this.deleteFavorites();
-                return true;
-            case 1:
-                return true;
-            default:
-                return false;
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -146,25 +124,15 @@ public class FavoritesRenderActivity extends ListActivity {
         }
     }
 
-    public void deleteFavorites() {
-        if (deletedLink != null) {
-            Intent i = new Intent(FavoritesRenderActivity.this, FavoritesDeletedActivity.class);
-            i.putExtra("deletedLink", deletedLink);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(i);
-        }
-    }
-
     public void openHome() {
-        Intent i = new Intent(FavoritesRenderActivity.this, MainActivity.class);
+        Intent i = new Intent(FavoritesDeletedActivity.this, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }
 
     public void openFavorites() {
-        Intent i = new Intent(FavoritesRenderActivity.this, FavoritesActivity.class);
+        Intent i = new Intent(FavoritesDeletedActivity.this, FavoritesActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
@@ -174,16 +142,73 @@ public class FavoritesRenderActivity extends ListActivity {
         SignOut signout = new SignOut(app.getToken());
         signout.execute();
         app.setToken("");
-        Intent i = new Intent(FavoritesRenderActivity.this, LoginActivity.class);
+        Intent i = new Intent(FavoritesDeletedActivity.this, LoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }
 
-    //Disables back button on certain pages
-    public void onBackPressed() {
-        System.out.println("BACK PRESSED FAVORITES PAGE");
+    public void query() throws Exception {
+        URL url;
+        url = new URL("http://timewastr.herokuapp.com/favorites/remove/" + app.getToken() + "/?articleLink=" + URLEncoder.encode(link, "UTF-8"));
+        //Do a get request and grab data
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"), 8);
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null)
+        {
+            sb.append(line + "\n");
+        }
+        response = sb.toString();
+        System.out.println(response);
+        reader.close();
     }
 
+    public void queryComplete() throws JSONException {
+        JSONObject data = new JSONObject(response);
+        if (loading) {
+            System.out.println(response);
+            Iterator<?> keys = data.keys();
 
+            while (keys.hasNext()) {
+                String key = (String)keys.next();
+                if (data.get(key) instanceof JSONObject) {
+                    //Make sure the key is a JSON object, we don't want null values
+                    JSONObject nestedData = data.getJSONObject(key);
+                    System.out.println("ADDING TITLE: " + nestedData.getString("title"));
+                    System.out.println("ADDING URL: " + nestedData.getString("articleLink"));
+                    articleTitles.add(nestedData.getString("title"));
+                    articleLinks.add(nestedData.getString("articleLink"));
+                }
+            }
+            System.out.println("Exiting While loop");
+        } else {
+            Toast.makeText(FavoritesDeletedActivity.this, "Done", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public class MyAsyncTask extends AsyncTask<String, Void, Integer> {
+        @Override
+        // THIS IS THE TASK TO DO
+        protected Integer doInBackground(String... params) {
+            try {
+                query();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+            return 1;
+        }
+        // THIS IS WHEN TASK IS COMPLETED
+        @Override
+        protected void onPostExecute(Integer result){
+            Intent i = new Intent(FavoritesDeletedActivity.this, FavoritesActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(i);
+
+        }
+    }
 }
